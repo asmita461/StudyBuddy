@@ -32,15 +32,14 @@ router.post('/register', function(req, res, next) {
 						}else{
 							c=1;
 						}
-
 						var newPerson = new User({
 							unique_id:c,
 							email:personInfo.email,
 							username: personInfo.username,
 							password: personInfo.password,
-							passwordConf: personInfo.passwordConf
+							passwordConf: personInfo.passwordConf,
+							coins: 0
 						});
-
 						newPerson.save(function(err, Person){
 							if(err)
 								console.log(err);
@@ -49,7 +48,7 @@ router.post('/register', function(req, res, next) {
 						});
 
 					}).sort({_id: -1}).limit(1);
-					res.send({"Success":"You are regestered,You can login now."});
+					res.send({"Success":"You are registered,You can login now."});
 				}else{
 					res.send({"Success":"Email is already used."});
 				}
@@ -91,13 +90,50 @@ router.get('/profile', function (req, res, next) {
 		console.log("data");
 		console.log(data);
 		if(!data){
-			res.redirect('/');
+			res.redirect('/register');
 		}else{
 			//console.log("found");
 			return res.render('data.ejs', {"name":data.username,"email":data.email});
 		}
 	});
 });
+
+router.get('/learn', function (req, res, next) {
+	console.log("learn");
+	User.findOne({unique_id:req.session.userId},function(err,data){
+		console.log("data");
+		console.log(data);
+		if(!data){
+			res.redirect('/register');
+		}else{
+			//console.log("found");
+			return res.render('learn.ejs', {"name":data.username,"coins":data.coins});
+		}
+	});
+});
+
+router.post('/learn', function(req, res, next) {
+	console.log(req.body);
+	var coins = req.body.money;
+	User.findOne({unique_id:req.session.userId},function(err,data){
+		console.log("data");
+		console.log(data);
+		if(!data){
+			res.redirect('/register');
+		}else{
+			data.coins = coins;
+			console.log(data);
+			data.save(function(err, Person){
+				if(err)
+					console.log(err);
+				else
+					console.log('Success');
+			});
+			res.send({"Success":"success"});
+		}
+	});
+});
+
 
 router.get('/logout', function (req, res, next) {
 	console.log("logout")
@@ -107,7 +143,7 @@ router.get('/logout', function (req, res, next) {
     	if (err) {
     		return next(err);
     	} else {
-    		return res.redirect('/');
+    		return res.redirect('/register');
     	}
     });
 }

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="./css/main.css">
+
+    <script type="text/javascript">
+		$(document).ready(function(){
+            var c = document.getElementById("coin");
+            if(c>0){
+                var txt = "<a href=\"common\">Search Tutors</a>";
+                document.getElementById("result").innerHTML = txt;
+            } else {
+                var txt = "<form id=\"form1\" method=\"post\">";
+                txt = txt + "<input id=\"amount\" type=\"number\" name=\"money\" placeholder=\"Enter Amount\" required=\"\"><br />";
+                txt = txt+"<br/><input type=\"submit\" value=\"Submit\" class=\"btn btn-success\"></form>";
+                document.getElementById("result").innerHTML = txt;
+                $( "#form1" ).submit(function(event) {
+				event.preventDefault();
+                $.ajax({
+					type: 'POST',
+					url: '/learn',
+					data: $('#amount'),
+					dataType: "number",
+                    success: function(response){
+                        document.getElementById("aa").click();
+                    }
+         			})
+            });
+        }
+        });
+    </script>
+
+</head>
+<body>
+	<div class="col-md-4 col-md-offset-4">
+		<div>
+			<p>Details</p>
+		</div>
+		<div>
+			<center>
+				<table id="myTable" class="table table-hover text-center">
+					<tr><td>Name </td><td><%= name %></td></tr>
+					<tr><td>Coins </td><td id="coin"><%= coins %></td></tr>
+				</table>
+			</center>
+		</div>
+        <br/><br/>
+        <div><span id="result"></span></div>
+		<br/><br/><br/>
+		<div class="abc">
+			<a href="/logout">Logout</a>
+		</div>
+        <div id="LangTable"><a href="/common" id="aa"></a>
+	</div>
+</body>
+</html>
